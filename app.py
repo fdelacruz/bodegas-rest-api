@@ -20,10 +20,18 @@ class Item(Resource):
         return {'item': item}, 200 if item else 404
 
     def post(self, name):
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            'price',
+            type=float,
+            required=True,
+            help="This field cannot be left blank!"
+        )
+        data = parser.parse_args()
+
         if next(filter(lambda x: x['name'] == name, items), None):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400
 
-        data = request.get_json()
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201
