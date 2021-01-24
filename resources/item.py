@@ -28,8 +28,8 @@ class Item(Resource):
     def get(self, name):
         item = ItemModel.find_by_name(name)
         if item:
-            return item.json()
-        return {'message': 'Item not found'}, 404
+            return item.json(), 200
+        return {'message': 'Item not found.'}, 404
 
     @fresh_jwt_required
     def post(self, name):
@@ -43,7 +43,7 @@ class Item(Resource):
         try:
             item.save_to_db()
         except:
-            return {"message": "An error occurred inserting the item."}, 500
+            return {'message': 'An error occurred inserting the item.'}, 500
 
         return item.json(), 201
 
@@ -56,8 +56,8 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
-
-        return {'message': "Item deleted"}
+            return {'message': 'Item deleted.'}, 200
+        return {'message': 'Item not found.'}, 404
 
     def put(self, name):
         data = Item.parser.parse_args()
@@ -71,7 +71,7 @@ class Item(Resource):
 
         item.save_to_db()
 
-        return item.json()
+        return item.json(), 200
 
 
 class ItemList(Resource):

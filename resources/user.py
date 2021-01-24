@@ -31,12 +31,12 @@ class UserRegister(Resource):
         data = _user_parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
-            return {"message": "A user with that username already exists."}, 400
+            return {'message': 'A user with that username already exists.'}, 400
 
         user = UserModel(**data)
         user.save_to_db()
 
-        return {"message": "User created successfully."}
+        return {'message': 'User created successfully.'}, 201
 
 
 class User(Resource):
@@ -44,14 +44,13 @@ class User(Resource):
     def get(cls, user_id):
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {'message': 'User not found'}, 404
-
-        return user.json()
+            return {'message': 'User not found.'}, 404
+        return user.json(), 200
 
     def delete(cls, user_id):
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {'message': 'User not found'}, 404
+            return {'message': 'User not found.'}, 404
 
         user.delete_from_db()
         return {'message': 'User deleted.'}, 200
@@ -72,7 +71,7 @@ class UserLogin(Resource):
                 'refresh_token': refresh_token
             }, 200
 
-        return {'message': 'Invalid credentials'}, 401
+        return {'message': 'Invalid credentials.'}, 401
 
 
 class UserLogout(Resource):
