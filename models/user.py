@@ -12,7 +12,6 @@ class UserModel(db.Model):
     username = db.Column(db.String(80))
     password = db.Column(db.String(80))
 
-
     def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
@@ -32,9 +31,9 @@ class UserModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_by_username(cls, username: str):
+    def find_by_username(cls, username: str) -> "UserModel":
         return cls.query.filter_by(username=username).first()
 
     @classmethod
-    def find_by_id(cls, _id: int):
+    def find_by_id(cls, _id: int) -> "UserModel":
         return cls.query.filter_by(id=_id).first()
