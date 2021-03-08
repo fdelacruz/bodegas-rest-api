@@ -9,7 +9,6 @@ from flask_jwt_extended import (
     jwt_required,
     get_raw_jwt
 )
-from marshmallow import ValidationError
 from models.user import UserModel
 from schemas.user import UserSchema
 from blacklist import BLACKLIST
@@ -27,11 +26,8 @@ user_schema = UserSchema()
 class UserRegister(Resource):
     @classmethod
     def post(cls):
-        try:
-            user_json = request.get_json()
-            user = user_schema.load(user_json)
-        except ValidationError as err:
-            return err.messages, 400
+        user_json = request.get_json()
+        user = user_schema.load(user_json)
 
         if UserModel.find_by_username(user.username):
             return {'message': USERNAME_ALREADY_EXITS}, 400
@@ -62,11 +58,8 @@ class User(Resource):
 class UserLogin(Resource):
     @classmethod
     def post(cls):
-        try:
-            user_json = request.get_json()
-            user_data = user_schema.load(user_json)
-        except ValidationError as err:
-            return err.messages, 400
+        user_json = request.get_json()
+        user_data = user_schema.load(user_json)
 
         user = UserModel.find_by_username(user_data.username)
 
