@@ -14,6 +14,8 @@ from resources.user import (
     TokenRefresh
 )
 from resources.item import Item, ItemList
+from resources.store import Store, StoreList
+
 from blacklist import BLACKLIST
 
 
@@ -87,6 +89,8 @@ def revoked_token_callback():
     })
 
 
+api.add_resource(Store, '/store/<string:name>')
+api.add_resource(StoreList, '/stores')
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register')
