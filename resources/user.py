@@ -29,14 +29,13 @@ class UserRegister(Resource):
     def post(cls):
         try:
             user_json = request.get_json()
-            user_data = user_schema.load(user_json)
+            user = user_schema.load(user_json)
         except ValidationError as err:
             return err.messages, 400
 
-        if UserModel.find_by_username(user_data['username']):
+        if UserModel.find_by_username(user.username):
             return {'message': USERNAME_ALREADY_EXITS}, 400
 
-        user = UserModel(**user_data)
         user.save_to_db()
 
         return {'message': USER_CREATED_SUCCESSFULLY}, 201
@@ -69,9 +68,9 @@ class UserLogin(Resource):
         except ValidationError as err:
             return err.messages, 400
 
-        user = UserModel.find_by_username(user_data['username'])
+        user = UserModel.find_by_username(user_data.username)
 
-        if user and safe_str_cmp(user.password, user_data['password']):
+        if user and safe_str_cmp(user.password, user_data.password):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             return {
