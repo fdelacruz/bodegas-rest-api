@@ -1,10 +1,11 @@
+import os
 from typing import List
 from requests import Response, post
 
 
 class Mailgun:
-    MAILGUN_DOMAIN = "your_mailgun_domain"
-    MAILGUN_API_KEY = "your_mailgun_api_key"
+    MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN")
+    MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")
 
     FROM_TITLE = "Stores REST API"
     FROM_EMAIL = f"do-no-reply@{MAILGUN_DOMAIN}"
