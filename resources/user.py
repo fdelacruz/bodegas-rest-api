@@ -1,3 +1,4 @@
+import traceback
 from flask_restful import Resource
 from flask import request, make_response, render_template
 from werkzeug.security import safe_str_cmp
@@ -14,13 +15,15 @@ from schemas.user import UserSchema
 from blacklist import BLACKLIST
 
 USERNAME_ALREADY_EXITS = 'A user with that username already exists.'
-USER_CREATED_SUCCESSFULLY = 'User created successfully.'
+EMAIL_ALREADY_EXITS = 'A user with that email already exists.'
 USER_NOT_FOUND = 'User not found.'
 USER_DELETED = 'User deleted.'
 INVALID_CREDENTIALS = 'Invalid credentials.'
 USER_LOGGED_OUT = 'User <id={}> successfully logged out.'
 NOT_CONFIRMED_ERROR = 'You have not confirmed registration, please check your email <{}>.'
 USER_CONFIRMED = 'User confirmed.'
+FAIL_TO_CREATE = 'Internal Server Error. Failed to create user.'
+SUCCESS_REGISTER_MESSAGE = 'Account created successfully, an email with an activation link has been sent to your email address, please check.'
 
 user_schema = UserSchema()
 
@@ -34,9 +37,16 @@ class UserRegister(Resource):
         if UserModel.find_by_username(user.username):
             return {'message': USERNAME_ALREADY_EXITS}, 400
 
-        user.save_to_db()
+        if UserModel.find_by_email(user.email):
+            return {'message': EMAIL_ALREADY_EXITS}, 400
 
-        return {'message': USER_CREATED_SUCCESSFULLY}, 201
+        try:
+            user.save_to_db()
+            user.send_confirmation_email()
+            return {'message': SUCCESS_REGISTER_MESSAGE}, 201
+        except:
+            traceback.print_exc()
+            return {'message': FAIL_TO_CREATE}, 500
 
 
 class User(Resource):
@@ -61,7 +71,7 @@ class UserLogin(Resource):
     @classmethod
     def post(cls):
         user_json = request.get_json()
-        user_data = user_schema.load(user_json)
+        user_data = user_schema.load(user_json, partial=("email",))
 
         user = UserModel.find_by_username(user_data.username)
 
