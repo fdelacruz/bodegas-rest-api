@@ -12,6 +12,7 @@
   "item_name_exists": "An item with name '{}' already exists.",
   "item_error_inserting": "An error occurred while inserting the item.",
   "item_admin_privilege_reqd": "Admin privilege required.",
+  "item_more_data_available": "More data available if logged in.",
   "item_not_found": "Item not found.",
   "item_deleted": "Item deleted.",
 
@@ -25,7 +26,7 @@
   "user_not_found": "User not found.",
   "user_deleted": "User deleted.",
   "user_invalid_credentials": "Invalid credentials!",
-  "user_logged_out": "User <id={user_id}> successfully logged out.",
+  "user_logged_out": "User <id={}> successfully logged out.",
   "user_not_confirmed": "You have not confirmed registration, please check your email <{}>.",
   "user_error_creating": "Internal server error. Failed to create user.",
   "user_registered": "Account created successfully, an email with an activation link has been sent to your email address, please check."
