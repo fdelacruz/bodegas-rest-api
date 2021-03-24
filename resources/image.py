@@ -13,8 +13,9 @@ image_schema = ImageSchema()
 
 
 class ImageUpload(Resource):
+    @classmethod
     @jwt_required
-    def post(self):
+    def post(cls):
         """
         used to upload an image file.
         It uses JWT to retrieve user information and then save the image to the
@@ -34,8 +35,9 @@ class ImageUpload(Resource):
 
 
 class Image(Resource):
+    @classmethod
     @jwt_required
-    def get(self, filename: str):
+    def get(cls, filename: str):
         """
         Returns the requested image if it exists. Looks up inside the logged in
         user's folder.
@@ -52,7 +54,8 @@ class Image(Resource):
             return {'message': gettext('image_not_found').format(filename)}, 404
 
     @jwt_required
-    def delete(self, filename: str):
+    @classmethod
+    def delete(cls, filename: str):
         user_id = get_jwt_identity()
         folder = f"user_{user_id}"
 
@@ -70,8 +73,9 @@ class Image(Resource):
 
 
 class AvatarUpload(Resource):
+    @classmethod
     @jwt_required
-    def put(self):
+    def put(cls):
         """
         This endpoint is user to upload user avatars. All avatars are named
         after the user's ID. Something like: user_{id}.{ext}
@@ -98,3 +102,14 @@ class AvatarUpload(Resource):
         except UploadNotAllowed:
             extension = image_helper.get_extension(data["image"])
             return {'message': gettext("image_illegal_extension").format(extension)}, 400
+
+
+class Avatar(Resource):
+    @classmethod
+    def get(cls, user_id: int):
+        folder = "avatar"
+        filename = f"user_{user_id}"
+        avatar = image_helper.find_image_any_format(filename, folder)
+        if avatar:
+            return send_file(avatar)
+        return {'message': gettext('avatar_not_found')}, 404
