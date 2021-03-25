@@ -18,9 +18,9 @@ from libs.image_helper import IMAGE_SET
 
 from blacklist import BLACKLIST
 
-
 app = Flask(__name__)
 load_dotenv(".env", verbose=True)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI", "sqlite:///data.db")
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
 patch_request_class(app, 10 * 1024 * 1024)  # 10MB size upload
