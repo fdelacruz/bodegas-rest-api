@@ -3,10 +3,12 @@ import os
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from marshmallow import ValidationError
 from flask_uploads import configure_uploads, patch_request_class
 from dotenv import load_dotenv
 
+from db import db
 from ma import ma
 
 from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh
@@ -25,7 +27,6 @@ app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
 patch_request_class(app, 10 * 1024 * 1024)  # 10MB size upload
 configure_uploads(app, IMAGE_SET)
-api = Api(app)
 
 
 @app.before_first_request
@@ -38,8 +39,11 @@ def handle_marshmallow_validation(err):
     return jsonify(err.messages), 400
 
 
+api = Api(app)
 jwt = JWTManager(app)
+migrate = Migrate(app, db)
 
+db.init_app(app)
 
 @jwt.user_claims_loader
 def add_claims_to_jwt(identity):
@@ -111,6 +115,5 @@ api.add_resource(Avatar, "/avatar/<int:user_id>")
 
 if __name__ == '__main__':
     from db import db
-    db.init_app(app)
     ma.init_app(app)
     app.run()
