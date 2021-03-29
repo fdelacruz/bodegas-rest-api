@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from db import db
 from ma import ma
+from oa import oauth
 
 from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh
 from resources.item import Item, ItemList
@@ -116,4 +117,5 @@ api.add_resource(Avatar, "/avatar/<int:user_id>")
 if __name__ == '__main__':
     from db import db
     ma.init_app(app)
+    oauth.init_app(app)
     app.run()
