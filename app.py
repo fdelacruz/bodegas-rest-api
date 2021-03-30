@@ -8,6 +8,8 @@ from marshmallow import ValidationError
 from flask_uploads import configure_uploads, patch_request_class
 from dotenv import load_dotenv
 
+load_dotenv(".env", verbose=True)
+
 from db import db
 from ma import ma
 from oa import oauth
@@ -17,12 +19,12 @@ from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 from resources.confirmation import Confirmation, ConfirmationByUser
 from resources.image import ImageUpload, Image, AvatarUpload, Avatar
+from resources.github_login import GithubLogin
 from libs.image_helper import IMAGE_SET
 
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
-load_dotenv(".env", verbose=True)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI", "sqlite:///data.db")
 app.config.from_object("default_config")
 app.config.from_envvar("APPLICATION_SETTINGS")
@@ -105,6 +107,7 @@ api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
+api.add_resource(GithubLogin, '/login/github')
 api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(Confirmation, '/user_confirmation/<string:confirmation_id>')
